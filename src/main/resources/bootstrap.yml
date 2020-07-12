@@ -1,0 +1,4 @@
+spring:
+  cloud:    stream:      kinesis:        binder:          headers:          - X-B3-SpanId
+          - X-B3-ParentSpanId
+          - X-B3-TraceId

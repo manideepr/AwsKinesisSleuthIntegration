@@ -1,0 +1,74 @@
+buildscript {
+    ext {
+    	springBootVersion='2.2.4.RELEASE'
+    	lombokVersion='1.18.12'
+    	sleuthVersion='2.2.2.RELEASE'
+    	slf4jVersion='1.2.3'
+    	logStashVersion='4.11'
+    	gradlePlugin='1.0.8.RELEASE'
+    	springDependencyManagementVersion='1.0.9.RELEASE'
+    	awsVersion='1.11.771'
+    	awsKinesis='0.13.1'
+    }
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:$gradlePlugin"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'application'
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3'
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        mavenBom "com.amazonaws:aws-java-sdk-bom:${awsVersion}"
+    }
+
+}
+
+
+dependencies { 
+	implementation ("org.springframework.boot:spring-boot-starter:$springBootVersion",
+	"org.springframework.boot:spring-boot-starter-web:$springBootVersion",
+	"org.springframework.cloud:spring-cloud-starter-sleuth:$sleuthVersion",
+	"ch.qos.logback:logback-core:$slf4jVersion",
+	"net.logstash.logback:logstash-logback-encoder:$logStashVersion",
+	"org.projectlombok:lombok:$lombokVersion")
+	implementation ("org.springframework.cloud:spring-cloud-stream-binder-kinesis:2.0.1.RELEASE")
+	implementation ("com.amazonaws:amazon-kinesis-producer:${awsKinesis}")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
+}
+
+bootRun {
+    main= 'kinesis.sleuth.integration.App'
+}
+
+application {
+    mainClassName='kinesis.sleuth.integration.App'
+}
+
+
+test {
+    useJUnitPlatform()
+}
