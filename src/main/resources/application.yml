@@ -1,1 +1,11 @@
 spring:
+  cloud:
+    stream:
+      bindings:
+        output:
+          group: aGroup
+          binder: kinesis
+          destination: kinesisQueue
+          content-type:  application/json
+          producer: 
+            sync: true

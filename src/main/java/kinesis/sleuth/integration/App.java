@@ -3,12 +3,36 @@
  */
 package kinesis.sleuth.integration;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
+import kinesis.sleuth.integration.producer.SpringIntegrationPublisher;
+
+/**
+ * @author Manideep
+ * @Description
+ */
 @SpringBootApplication
+@EnableScheduling
 public class App {
+	@Autowired
+	private SpringIntegrationPublisher publisher;
+
 	public static void main(String[] args) {
 		SpringApplication.run(App.class, args);
 	}
+
+	/**
+	 * For test simple invoke the publisher repeatedly
+	 */
+	@Scheduled(fixedDelay = 20000L)
+	public void testPublishSleuthKinesisInt() {
+		publisher.publish(UUID.randomUUID().toString());
+	}
+
 }
